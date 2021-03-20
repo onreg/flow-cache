@@ -1,8 +1,10 @@
 package com.onreg01.flow_cache.model
 
-sealed class Status<out R> {
-    object Empty: Status<Nothing>()
-    object Loading : Status<Nothing>()
-    data class Data<R>(private val value: R) : Status<R>(), Event<R> by EventImpl(value)
-    data class Error(private val throwable: Throwable) : Status<Nothing>(), Event<Throwable> by EventImpl(throwable)
+sealed class Status {
+    object Empty : Status()
+    object Loading : Status()
+    sealed class Result<R> : Status() {
+        data class Data<R>(private val value: R) : Result<R>()
+        data class Error(private val throwable: Throwable) : Result<Nothing>()
+    }
 }

@@ -7,10 +7,11 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class CacheHolder<T : Any?, R>(
-        private var action: T?,
-        start: Boolean = true,
-        coroutineScope: CoroutineScope,
-        private val function: (T) -> Flow<R>) : Cache<R>,
+    private var action: T?,
+    start: Boolean = true,
+    coroutineScope: CoroutineScope,
+    private val function: (T) -> Flow<R>
+) : Cache<R>,
     ParamCache<T, R>, ReadOnlyProperty<ViewModel, CacheHolder<T, R>> {
 
     private val flow = MutableStateFlow<T?>(null)
