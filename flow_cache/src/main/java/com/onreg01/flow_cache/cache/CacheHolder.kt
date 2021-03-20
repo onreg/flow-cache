@@ -7,7 +7,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class CacheHolder<T : Any?, R>(
-    private var action: T?,
+    private var param: T?,
     start: Boolean = true,
     coroutineScope: CoroutineScope,
     private val function: (T) -> Flow<R>
@@ -18,9 +18,9 @@ class CacheHolder<T : Any?, R>(
 
     override val cache = flow.filterNotNull()
         .onStart {
-            action?.let {
+            param?.let {
                 if (start) {
-                    emit(it)
+                    flow.value = it
                 }
             }
         }
@@ -30,13 +30,11 @@ class CacheHolder<T : Any?, R>(
 
     override fun run(value: T) {
         flow.value = value
-        action = value
+        param = value
     }
 
     override fun run() {
-        action?.let {
-            flow.value = it
-        }
+        flow.value = param
     }
 
     override fun getValue(thisRef: ViewModel, property: KProperty<*>): CacheHolder<T, R> = this

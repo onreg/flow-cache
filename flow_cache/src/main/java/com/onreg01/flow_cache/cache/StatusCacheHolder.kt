@@ -8,7 +8,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class StatusCacheHolder<T : Any, R>(
-    private var action: T?,
+    private var param: T?,
     start: Boolean = true,
     coroutineScope: CoroutineScope,
     private val function: (T) -> Flow<R>
@@ -18,9 +18,9 @@ class StatusCacheHolder<T : Any, R>(
 
     override val cache = flow.filterNotNull()
         .onStart {
-            action?.let {
+            param?.let {
                 if (start) {
-                    emit(it)
+                    flow.value = it
                 }
             }
         }.flatMapLatest {
@@ -38,13 +38,11 @@ class StatusCacheHolder<T : Any, R>(
 
     override fun run(value: T) {
         flow.value = value
-        action = value
+        param = value
     }
 
     override fun run() {
-        action?.let {
-            flow.value = it
-        }
+        flow.value = param
     }
 
     override fun getValue(thisRef: ViewModel, property: KProperty<*>): StatusCacheHolder<T, R> = this
