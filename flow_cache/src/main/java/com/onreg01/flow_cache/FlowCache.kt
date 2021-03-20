@@ -19,7 +19,7 @@ fun <R : Any?> ViewModel.cache(
     return CacheHolder(DEF_ACTION, start, viewModelScope, { function() })
 }
 
-fun <T : Any?, R : Any?> ViewModel.paramCache(
+fun <T : Any?, R : Any?> ViewModel.cache(
     initialParam: T? = null,
     start: Boolean = true,
     function: (T) -> Flow<R>
@@ -34,7 +34,7 @@ fun <R : Any?> ViewModel.statusCache(
     return StatusCacheHolder(DEF_ACTION, start, viewModelScope, { function() })
 }
 
-fun <T : Any, R : Any?> ViewModel.paramStatusCache(
+fun <T : Any, R : Any?> ViewModel.statusCache(
     initialParam: T? = null,
     start: Boolean = true,
     function: (T) -> Flow<R>

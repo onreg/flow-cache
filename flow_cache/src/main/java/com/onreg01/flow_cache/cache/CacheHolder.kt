@@ -10,7 +10,7 @@ class CacheHolder<T : Any?, R>(
     private var param: T?,
     start: Boolean = true,
     coroutineScope: CoroutineScope,
-    private val function: (T) -> Flow<R>
+    function: (T) -> Flow<R>
 ) : Cache<R>,
     ParamCache<T, R>, ReadOnlyProperty<ViewModel, CacheHolder<T, R>> {
 

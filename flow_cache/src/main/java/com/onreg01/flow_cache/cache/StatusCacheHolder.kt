@@ -11,7 +11,7 @@ class StatusCacheHolder<T : Any, R>(
     private var param: T?,
     start: Boolean = true,
     coroutineScope: CoroutineScope,
-    private val function: (T) -> Flow<R>
+    function: (T) -> Flow<R>
 ) : Cache<Status>, ParamCache<T, Status>, ReadOnlyProperty<ViewModel, StatusCacheHolder<T, R>> {
 
     private val flow = MutableStateFlow<T?>(null)
