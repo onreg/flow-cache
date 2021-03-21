@@ -2,6 +2,7 @@ package com.onreg01.flow_cache
 
 import app.cash.turbine.test
 import junit.framework.Assert.assertEquals
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.runBlocking
@@ -30,7 +31,7 @@ class FlowCacheTest {
     fun `cache, start = true`() = runBlocking {
         viewModel.data.cache
             .test {
-                assertEquals(1, expectItem())
+                assertEquals(viewModel.results[DATA], expectItem())
                 expectNoEvents()
             }
     }
@@ -42,9 +43,27 @@ class FlowCacheTest {
             .test {
                 expectNoEvents()
                 viewModel.data.run()
-                assertEquals(1, expectItem())
+                assertEquals(viewModel.results[DATA], expectItem())
                 expectNoEvents()
             }
+    }
+
+    @Test
+    fun `cache, debounce similar execution`() = runBlocking {
+        viewModel = ViewModelFake(autoStart = mapOf(DATA to false))
+        viewModel.awaitHandlers[DATA] = CompletableDeferred()
+        val bodyExecutions = viewModel.recordBodyExecutions {
+            viewModel.data.cache
+                .test {
+                    viewModel.data.run()
+                    viewModel.data.run()
+                    viewModel.data.run()
+                    viewModel.awaitHandlers[DATA]?.complete(Unit)
+                    assertEquals(viewModel.results[DATA], expectItem())
+                    expectNoEvents()
+                }
+        }
+        assertEquals(viewModel.results[DATA], bodyExecutions[DATA])
     }
 
     @Test
@@ -52,12 +71,12 @@ class FlowCacheTest {
         val bodyExecutions = viewModel.recordBodyExecutions {
             merge(viewModel.data.cache, viewModel.data.cache, viewModel.data.cache)
                 .test {
-                    assertEquals(1, expectItem())
-                    assertEquals(1, expectItem())
-                    assertEquals(1, expectItem())
+                    assertEquals(viewModel.results[DATA], expectItem())
+                    assertEquals(viewModel.results[DATA], expectItem())
+                    assertEquals(viewModel.results[DATA], expectItem())
                     expectNoEvents()
                 }
         }
-        assertEquals(1, bodyExecutions[DATA])
+        assertEquals(viewModel.results[DATA], bodyExecutions[DATA])
     }
 }

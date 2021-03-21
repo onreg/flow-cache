@@ -1,7 +1,8 @@
 package com.onreg01.flow_cache
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.flow
 
 const val DATA = "data"
 const val PARAM_DATA = "paramData"
@@ -9,30 +10,33 @@ const val STATUS_DATA = "statusData"
 const val PARAM_STATUS_DATA = "paramStatusData"
 
 class ViewModelFake(
-    results: Map<String, Int> = mapOf(DATA to 1, PARAM_DATA to 2, STATUS_DATA to 3, PARAM_STATUS_DATA to 4),
     autoStart: Map<String, Boolean> = emptyMap()
 ) : ViewModel() {
 
     private val bodyExecution = mutableMapOf<String, Int>()
+    val results = mapOf(DATA to 1, PARAM_DATA to 2, STATUS_DATA to 3, PARAM_STATUS_DATA to 4)
+    val awaitHandlers: MutableMap<String, CompletableDeferred<Unit>> = mutableMapOf()
 
     val data by cache<Int>(start = autoStart.getOrDefault(DATA, true)) {
-        bodyExecution.inc(DATA)
-        flowOf(results.getOrDefault(DATA, 1))
+        body(DATA)
     }
 
     val paramData by cache<String, Int>(start = autoStart.getOrDefault(PARAM_DATA, true)) {
-        bodyExecution.inc(PARAM_DATA)
-        flowOf(results.getOrDefault(PARAM_DATA, 2))
+        body(PARAM_DATA)
     }
 
     val statusData by statusCache<Int>(start = autoStart.getOrDefault(STATUS_DATA, true)) {
-        bodyExecution.inc(STATUS_DATA)
-        flowOf(results.getOrDefault(STATUS_DATA, 3))
+        body(STATUS_DATA)
     }
 
     val paramStatusData by statusCache<String, Int>(start = autoStart.getOrDefault(PARAM_STATUS_DATA, true)) {
-        bodyExecution.inc(PARAM_STATUS_DATA)
-        flowOf(results.getOrDefault(PARAM_STATUS_DATA, 4))
+        body(PARAM_STATUS_DATA)
+    }
+
+    private fun body(name: String) = flow {
+        bodyExecution.inc(name)
+        awaitHandlers[name]?.await()
+        emit(results[name]!!)
     }
 
     private fun MutableMap<String, Int>.inc(name: String) {
