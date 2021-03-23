@@ -10,10 +10,12 @@ const val STATUS_DATA = "statusData"
 const val PARAM_STATUS_DATA = "paramStatusData"
 
 class ViewModelFake(
+    initialParam: Map<String, String> = emptyMap(),
     autoStart: Map<String, Boolean> = emptyMap()
 ) : ViewModel() {
 
     private val bodyExecution = mutableMapOf<String, Int>()
+
     val results = mapOf(DATA to 1, PARAM_DATA to 2, STATUS_DATA to 3, PARAM_STATUS_DATA to 4)
     val awaitHandlers: MutableMap<String, CompletableDeferred<Unit>> = mutableMapOf()
 
@@ -21,7 +23,7 @@ class ViewModelFake(
         body(DATA)
     }
 
-    val paramData by cache<String, Int>(start = autoStart.getOrDefault(PARAM_DATA, true)) {
+    val paramData by cache<String, Int>(initialParam[PARAM_DATA], start = autoStart.getOrDefault(PARAM_DATA, true)) {
         body(PARAM_DATA)
     }
 
