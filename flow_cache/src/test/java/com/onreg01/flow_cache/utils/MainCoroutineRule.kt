@@ -1,4 +1,4 @@
-package com.onreg01.flow_cache
+package com.onreg01.flow_cache.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
