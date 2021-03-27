@@ -31,8 +31,10 @@ class ParamStatusCacheTest {
         viewModel = FakeViewModel(
             initialParam,
             start,
-            FakeViewModelDelegate(defaultResult)
-        )
+            FakeViewModelDelegate()
+        ).apply {
+            result = defaultResult
+        }
     }
 
     @Test
@@ -182,8 +184,6 @@ class ParamStatusCacheTest {
                     viewModel.awaitHandler?.complete(Unit)
                     assertEquals(Status.Empty, expectItem())
                     assertEquals(Status.Loading, expectItem())
-                    assertEquals(Status.Loading, expectItem())
-                    assertEquals(Status.Loading, expectItem())
                     assertEquals(Status.Result.Data(defaultResult), expectItem())
                     expectNoEvents()
                 }
@@ -219,7 +219,7 @@ class ParamStatusCacheTest {
 
         var emptyFlow: Boolean = false
 
-        val data by statusCache<String, Int>(initialParam, start) {
+        val data by statusCache(initialParam, start) {
             if (emptyFlow) return@statusCache emptyFlow<Int>()
             run()
         }

@@ -30,8 +30,10 @@ class ParamCacheTest {
         viewModel = FakeViewModel(
             initialParam,
             start,
-            FakeViewModelDelegate(defaultResult)
-        )
+            FakeViewModelDelegate()
+        ).apply {
+            result = defaultResult
+        }
     }
 
     @Test
@@ -93,8 +95,10 @@ class ParamCacheTest {
         viewModel.data.cache
             .test {
                 assertEquals(defaultResult, expectItem())
+                val result = 2
+                viewModel.result = result
                 viewModel.data.run()
-                assertEquals(defaultResult, expectItem())
+                assertEquals(result, expectItem())
                 expectNoEvents()
             }
     }

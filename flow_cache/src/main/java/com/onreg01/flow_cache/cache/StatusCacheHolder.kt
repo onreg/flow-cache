@@ -39,6 +39,7 @@ class StatusCacheHolder<T : Any, R>(
                 flow.value = null
             }
         }
+        .distinctUntilChanged()
         .shareIn(coroutineScope, SharingStarted.Lazily, 1)
         .onStart { emit(Status.Empty) }
 

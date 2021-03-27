@@ -28,8 +28,10 @@ class CacheTest {
     private fun init(start: Boolean) {
         viewModel = FakeViewModel(
             start,
-            FakeViewModelDelegate(defaultResult)
-        )
+            FakeViewModelDelegate()
+        ).apply {
+            result = defaultResult
+        }
     }
 
     @Test
@@ -50,8 +52,10 @@ class CacheTest {
         viewModel.data.cache
             .test {
                 assertEquals(defaultResult, expectItem())
+                val result = 2
+                viewModel.result = result
                 viewModel.data.run()
-                assertEquals(defaultResult, expectItem())
+                assertEquals(result, expectItem())
                 expectNoEvents()
             }
     }
@@ -118,7 +122,7 @@ class CacheTest {
         private val baseViewModel: FakeViewModelDelegate<Int>
     ) : ViewModel(), BodyExecutionSpy by baseViewModel, BodyExecutionHandler<Int> by baseViewModel {
 
-        val data by cache<Int>(start) {
+        val data by cache<Int?>(start) {
             run()
         }
     }

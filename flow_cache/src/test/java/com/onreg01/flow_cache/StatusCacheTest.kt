@@ -30,8 +30,10 @@ class StatusCacheTest {
     private fun init(start: Boolean) {
         viewModel = FakeViewModel(
             start,
-            FakeViewModelDelegate(defaultResult)
-        )
+            FakeViewModelDelegate()
+        ).apply {
+            result = defaultResult
+        }
     }
 
     @Test
@@ -175,7 +177,7 @@ class StatusCacheTest {
 
         var emptyFlow: Boolean = false
 
-        val data by statusCache<Int>(start) {
+        val data by statusCache<Int?>(start) {
             if (emptyFlow) return@statusCache emptyFlow<Int>()
             run()
         }
