@@ -10,6 +10,7 @@ class FakeViewModelDelegate<T>(
 
     private var bodyExecution = 0
     override var awaitHandler: CompletableDeferred<Unit>? = null
+    override var throwable: Throwable? = null
 
     override suspend fun recordBodyExecutions(func: suspend () -> Unit): Int {
         bodyExecution = 0
@@ -19,6 +20,7 @@ class FakeViewModelDelegate<T>(
 
     override fun run(): Flow<T> = flow {
         bodyExecution = bodyExecution.inc()
+        throwable?.let { throw it }
         awaitHandler?.await()
         emit(result)
     }
@@ -30,5 +32,6 @@ interface BodyExecutionSpy {
 
 interface BodyExecutionHandler<T> {
     var awaitHandler: CompletableDeferred<Unit>?
+    var throwable: Throwable?
     fun run(): Flow<T>
 }

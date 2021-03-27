@@ -3,6 +3,7 @@ package com.onreg01.flow_cache.cache
 import androidx.lifecycle.ViewModel
 import com.onreg01.flow_cache.model.Status
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -16,6 +17,7 @@ class StatusCacheHolder<T : Any, R>(
 
     private val flow = MutableStateFlow<T?>(null)
 
+    @ExperimentalCoroutinesApi
     override val cache = flow.filterNotNull()
         .onStart {
             param?.let {
@@ -32,7 +34,11 @@ class StatusCacheHolder<T : Any, R>(
                     .catch { emit(Status.Result.Error(it)) })
             }
         }
-        .onEach { flow.value = null }
+        .onEach {
+            if (it != Status.Loading) {
+                flow.value = null
+            }
+        }
         .shareIn(coroutineScope, SharingStarted.Lazily, 1)
         .onStart { emit(Status.Empty) }
 
