@@ -9,13 +9,12 @@ import com.onreg01.flow_cache.utils.FakeViewModelDelegate
 import com.onreg01.flow_cache.utils.MainCoroutineRule
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
-import java.lang.RuntimeException
 import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
@@ -79,7 +78,7 @@ class StatusCacheTest {
     }
 
     @Test
-    fun `start = true, should start immediately get an error refresh get success result`() = runBlocking {
+    fun `start = true, should start immediately, get an error, refresh, get successful result`() = runBlocking {
         init(true)
 
         val exception = RuntimeException("Something went wrong")
@@ -90,6 +89,24 @@ class StatusCacheTest {
                 assertEquals(Status.Loading, expectItem())
                 assertEquals(Status.Result.Error(exception), expectItem())
                 viewModel.throwable = null
+                viewModel.data.run()
+                assertEquals(Status.Loading, expectItem())
+                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                expectNoEvents()
+            }
+    }
+
+    @Test
+    fun `start = true, should start immediately, get an empty status, refresh, get successful result`() = runBlocking {
+        init(true)
+
+        viewModel.emptyFlow = true
+        viewModel.data.cache
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                assertEquals(Status.Loading, expectItem())
+                assertEquals(Status.Empty, expectItem())
+                viewModel.emptyFlow = false
                 viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
                 assertEquals(Status.Result.Data(defaultResult), expectItem())
@@ -143,7 +160,10 @@ class StatusCacheTest {
         private val baseViewModel: FakeViewModelDelegate<Int>
     ) : ViewModel(), BodyExecutionSpy by baseViewModel, BodyExecutionHandler<Int> by baseViewModel {
 
+        var emptyFlow: Boolean = false
+
         val data by statusCache<Int>(start) {
+            if (emptyFlow) return@statusCache emptyFlow<Int>()
             run()
         }
     }
@@ -155,5 +175,6 @@ class StatusCacheTest {
     Don't start immediately
     Don't start immediately, start after run
 
-    Errors
+    Get an error, refresh, get successful result
+    Get an empty status, refresh, get successful result
 */
