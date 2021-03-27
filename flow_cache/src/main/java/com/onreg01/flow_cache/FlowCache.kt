@@ -30,7 +30,7 @@ fun <T : Any?, R : Any?> ViewModel.cache(
 fun <R : Any?> ViewModel.statusCache(
     start: Boolean = true,
     function: () -> Flow<R>
-): ReadOnlyProperty<ViewModel, Cache<Status>> {
+): ReadOnlyProperty<ViewModel, Cache<Status<R>>> {
     return StatusCacheHolder(DEF_ACTION, start, viewModelScope, { function() })
 }
 
@@ -38,6 +38,6 @@ fun <T : Any, R : Any?> ViewModel.statusCache(
     initialParam: T? = null,
     start: Boolean = true,
     function: (T) -> Flow<R>
-): ReadOnlyProperty<ViewModel, ParamCache<T, Status>> {
+): ReadOnlyProperty<ViewModel, ParamCache<T, Status<R>>> {
     return StatusCacheHolder(initialParam, start, viewModelScope, function)
 }

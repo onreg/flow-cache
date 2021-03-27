@@ -13,7 +13,7 @@ class StatusCacheHolder<T : Any, R>(
     start: Boolean = true,
     coroutineScope: CoroutineScope,
     function: (T) -> Flow<R>
-) : Cache<Status>, ParamCache<T, Status>, ReadOnlyProperty<ViewModel, StatusCacheHolder<T, R>> {
+) : Cache<Status<R>>, ParamCache<T, Status<R>>, ReadOnlyProperty<ViewModel, StatusCacheHolder<T, R>> {
 
     private val flow = MutableStateFlow<T?>(null)
 
@@ -29,9 +29,9 @@ class StatusCacheHolder<T : Any, R>(
             flow {
                 emit(Status.Loading)
                 emitAll(function(it)
-                    .map { Status.Result.Data(it) }
+                    .map { Status.Data(it) }
                     .onEmpty { emit(Status.Empty) }
-                    .catch { emit(Status.Result.Error(it)) })
+                    .catch { emit(Status.Error(it)) })
             }
         }
         .onEach {

@@ -44,7 +44,7 @@ class StatusCacheTest {
             .test {
                 assertEquals(Status.Empty, expectItem())
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
@@ -57,10 +57,10 @@ class StatusCacheTest {
             .test {
                 assertEquals(Status.Empty, expectItem())
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
@@ -86,7 +86,7 @@ class StatusCacheTest {
                 expectNoEvents()
                 viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
@@ -102,11 +102,11 @@ class StatusCacheTest {
             .test {
                 assertEquals(Status.Empty, expectItem())
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Error(exception), expectItem())
+                assertEquals(Status.Error(exception), expectItem())
                 viewModel.throwable = null
                 viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
@@ -124,7 +124,7 @@ class StatusCacheTest {
                 viewModel.emptyFlow = false
                 viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
-                assertEquals(Status.Result.Data(defaultResult), expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
@@ -143,7 +143,7 @@ class StatusCacheTest {
                     viewModel.awaitHandler?.complete(Unit)
                     assertEquals(Status.Empty, expectItem())
                     assertEquals(Status.Loading, expectItem())
-                    assertEquals(Status.Result.Data(defaultResult), expectItem())
+                    assertEquals(Status.Data(defaultResult), expectItem())
                     expectNoEvents()
                 }
         }
@@ -159,11 +159,11 @@ class StatusCacheTest {
                 .test {
                     assertEquals(Status.Empty, expectItem())
                     assertEquals(Status.Loading, expectItem())
-                    assertEquals(Status.Result.Data(defaultResult), expectItem())
+                    assertEquals(Status.Data(defaultResult), expectItem())
                     assertEquals(Status.Empty, expectItem())
-                    assertEquals(Status.Result.Data(defaultResult), expectItem())
+                    assertEquals(Status.Data(defaultResult), expectItem())
                     assertEquals(Status.Empty, expectItem())
-                    assertEquals(Status.Result.Data(defaultResult), expectItem())
+                    assertEquals(Status.Data(defaultResult), expectItem())
                     expectNoEvents()
                 }
         }
