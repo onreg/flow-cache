@@ -69,13 +69,26 @@ class StatusCacheTest {
 
         viewModel.data.cache
             .test {
-                viewModel.data.run()
                 assertEquals(Status.Empty, expectItem())
+                expectNoEvents()
+            }
+    }
+
+    @Test
+    fun `start = false, shouldn't start immediately, start after run`() = runBlocking {
+        init(false)
+
+        viewModel.data.cache
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                expectNoEvents()
+                viewModel.data.run()
                 assertEquals(Status.Loading, expectItem())
                 assertEquals(Status.Result.Data(defaultResult), expectItem())
                 expectNoEvents()
             }
     }
+
 
     @Test
     fun `start = true, should start immediately, get an error, refresh, get successful result`() = runBlocking {

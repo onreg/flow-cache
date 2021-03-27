@@ -44,7 +44,7 @@ class CacheTest {
     }
 
     @Test
-    fun `start = true, should start immediately and after run`() = runBlocking {
+    fun `start = true, should start immediately repeat after run`() = runBlocking {
         init(true)
 
         viewModel.data.cache
@@ -58,6 +58,16 @@ class CacheTest {
 
     @Test
     fun `start = false, shouldn't start immediately`() = runBlocking {
+        init(false)
+
+        viewModel.data.cache
+            .test {
+                expectNoEvents()
+            }
+    }
+
+    @Test
+    fun `start = false, shouldn't start immediately, start after run`() = runBlocking {
         init(false)
 
         viewModel.data.cache

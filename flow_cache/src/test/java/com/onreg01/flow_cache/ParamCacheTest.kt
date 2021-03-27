@@ -45,7 +45,7 @@ class ParamCacheTest {
     }
 
     @Test
-    fun `initialParam == null, start = false, should'n start after run()`() = runBlocking {
+    fun `initialParam == null, start = false, should'n start immediately and after run()`() = runBlocking {
         init(null, false)
         viewModel.data.cache
             .test {
@@ -56,7 +56,7 @@ class ParamCacheTest {
     }
 
     @Test
-    fun `initialParam == null, start = false, should start after run(param)`() = runBlocking {
+    fun `initialParam == null, start = false, should'n start immediately, start after run(param)`() = runBlocking {
         init(null, false)
         viewModel.data.cache
             .test {
@@ -67,7 +67,7 @@ class ParamCacheTest {
     }
 
     @Test
-    fun `initialParam != null, start = false, should'n start immediately`() = runBlocking {
+    fun `initialParam != null, start = false, should'n start immediately, start after run()`() = runBlocking {
         init("12345", false)
         viewModel.data.cache
             .test {
