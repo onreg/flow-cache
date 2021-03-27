@@ -17,7 +17,6 @@ import kotlin.time.ExperimentalTime
 
 @ExperimentalCoroutinesApi
 @ExperimentalTime
-
 class CacheTest {
 
     @get:Rule
@@ -70,7 +69,7 @@ class CacheTest {
     }
 
     @Test
-    fun `cache, debounce similar execution`() = runBlocking {
+    fun `debounce similar execution`() = runBlocking {
         init(false)
 
         viewModel.awaitHandler = CompletableDeferred()
@@ -89,7 +88,9 @@ class CacheTest {
     }
 
     @Test
-    fun `cache, many subscribers single body execution`() = runBlocking {
+    fun `many subscribers single body execution`() = runBlocking {
+        init(true)
+
         val bodyExecutions = viewModel.recordBodyExecutions {
             merge(viewModel.data.cache, viewModel.data.cache, viewModel.data.cache)
                 .test {

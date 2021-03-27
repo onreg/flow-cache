@@ -136,7 +136,7 @@ class ParamCacheTest {
     }
 
     @Test
-    fun `param cache, many subscribers single body execution`() = runBlocking {
+    fun `many subscribers single body execution`() = runBlocking {
         init("12345", true)
         val bodyExecutions = viewModel.recordBodyExecutions {
             merge(viewModel.data.cache, viewModel.data.cache, viewModel.data.cache)
