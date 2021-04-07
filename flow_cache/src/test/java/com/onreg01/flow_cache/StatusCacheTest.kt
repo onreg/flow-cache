@@ -170,6 +170,83 @@ class StatusCacheTest {
         assertEquals(1, bodyExecutions)
     }
 
+    @Test
+    fun `one shot events`() = runBlocking {
+        init(true)
+        viewModel.data.cache
+            .asEvent()
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                assertEquals(Status.Loading, expectItem())
+                assertEquals(Status.Data(defaultResult), expectItem())
+                expectNoEvents()
+            }
+
+        viewModel.data.cache
+            .asEvent()
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                expectNoEvents()
+            }
+
+        init(true)
+        val exception = RuntimeException("Something went wrong")
+        viewModel.throwable = exception
+
+        viewModel.data.cache
+            .asEvent()
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                assertEquals(Status.Loading, expectItem())
+                assertEquals(Status.Error(exception), expectItem())
+                expectNoEvents()
+            }
+
+        viewModel.data.cache
+            .asEvent()
+            .test {
+                assertEquals(Status.Empty, expectItem())
+                expectNoEvents()
+            }
+    }
+
+    @Test
+    fun `one shot data`() = runBlocking {
+        init(true)
+        viewModel.data.cache
+            .asDataEvent()
+            .test {
+                assertEquals(Status.Data(defaultResult), expectItem())
+                expectNoEvents()
+            }
+
+        viewModel.data.cache
+            .asDataEvent()
+            .test {
+                expectNoEvents()
+            }
+    }
+
+    @Test
+    fun `one shot error`() = runBlocking {
+        init(true)
+        val exception = RuntimeException("Something went wrong")
+        viewModel.throwable = exception
+
+        viewModel.data.cache
+            .asErrorEvent()
+            .test {
+                assertEquals(Status.Error(exception), expectItem())
+                expectNoEvents()
+            }
+
+        viewModel.data.cache
+            .asErrorEvent()
+            .test {
+                expectNoEvents()
+            }
+    }
+
     private class FakeViewModel(
         start: Boolean,
         private val baseViewModel: FakeViewModelDelegate<Int>
@@ -192,4 +269,8 @@ class StatusCacheTest {
 
     Get an error, refresh, get successful result
     Get an empty status, refresh, get successful result
+
+    One shot event
+    One show error
+    One show data
 */
