@@ -1,0 +1,33 @@
+package com.onreg01.flowcache
+
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.sample
+
+private const val DEF_THROTTLING = 400L
+
+fun <T> Flow<T>.throttleFirst(periodMillis: Long = DEF_THROTTLING): Flow<T> {
+    require(periodMillis > 0) { "period should be positive" }
+    return flow {
+        var lastTime = 0L
+        collect { value ->
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTime >= periodMillis) {
+                lastTime = currentTime
+                emit(value)
+            }
+        }
+    }
+}
+
+@FlowPreview
+fun <T> Flow<T>.sample(): Flow<T> {
+    return this.sample(DEF_THROTTLING)
+}
+
+fun CircularProgressIndicator.changeVisibility(progress: Boolean) {
+    if (progress) show() else hide()
+}

@@ -6,8 +6,8 @@ import java.time.Instant
 
 @Entity(tableName = "todo")
 data class TodoEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
     val text: String,
-    val date: Instant
+    val date: Instant,
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0
 )
