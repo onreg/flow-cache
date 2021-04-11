@@ -1,6 +1,9 @@
-package com.onreg01.flowcache
+package com.onreg01.flowcache.utils
 
+import android.app.Activity
+import android.view.View
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -30,4 +33,13 @@ fun <T> Flow<T>.sample(): Flow<T> {
 
 fun CircularProgressIndicator.changeVisibility(progress: Boolean) {
     if (progress) show() else hide()
+}
+
+fun Activity.handleException(view: View, throwable: Throwable) {
+    val message = if (throwable is MessageException) {
+        throwable.message
+    } else {
+        "Something went wrong!"
+    }
+    Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show()
 }

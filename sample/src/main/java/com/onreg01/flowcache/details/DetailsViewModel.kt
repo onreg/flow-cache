@@ -5,7 +5,8 @@ import com.onreg01.flow_cache.model.Status
 import com.onreg01.flow_cache.statusCache
 import com.onreg01.flowcache.db.Database
 import com.onreg01.flowcache.db.TodoEntity
-import com.onreg01.flowcache.sample
+import com.onreg01.flowcache.utils.MessageException
+import com.onreg01.flowcache.utils.sample
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -36,7 +37,10 @@ class DetailsViewModel(id: Long?) : ViewModel() {
     }
 
     val saveTodo by statusCache<String, Unit> {
-        flow { emit(Database.todoDao.saveTodo(TodoEntity(it, Instant.now()))) }
+        flow {
+            if (it.isBlank()) throw MessageException("Todo shouldn't be empty!")
+            emit(Database.todoDao.saveTodo(TodoEntity(it, Instant.now())))
+        }
     }
 
     val progress = combine(

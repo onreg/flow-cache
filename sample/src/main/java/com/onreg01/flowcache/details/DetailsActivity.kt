@@ -7,15 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.snackbar.Snackbar
 import com.onreg01.flow_cache.asDataEvent
 import com.onreg01.flow_cache.asErrorEvent
 import com.onreg01.flow_cache.model.Status
-import com.onreg01.flowcache.R
-import com.onreg01.flowcache.changeVisibility
+import com.onreg01.flowcache.*
 import com.onreg01.flowcache.databinding.ActivityDetailsBinding
-import com.onreg01.flowcache.sample
-import com.onreg01.flowcache.throttleFirst
+import com.onreg01.flowcache.utils.changeVisibility
+import com.onreg01.flowcache.utils.handleException
+import com.onreg01.flowcache.utils.sample
+import com.onreg01.flowcache.utils.throttleFirst
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -66,7 +66,7 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details) {
 
         viewModel.error
             .asErrorEvent()
-            .onEach { Snackbar.make(binding.root, "Something went wrong!", Snackbar.LENGTH_SHORT).show() }
+            .onEach { handleException(binding.root, it.value) }
             .catch { Timber.e(it) }
             .launchIn(lifecycleScope)
 

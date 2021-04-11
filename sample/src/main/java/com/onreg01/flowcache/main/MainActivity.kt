@@ -5,16 +5,15 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.google.android.material.snackbar.Snackbar
 import com.onreg01.flow_cache.model.Status
 import com.onreg01.flowcache.R
 import com.onreg01.flowcache.databinding.ActivityMainBinding
 import com.onreg01.flowcache.db.TodoEntity
 import com.onreg01.flowcache.details.DetailsActivity
-import com.onreg01.flowcache.throttleFirst
+import com.onreg01.flowcache.utils.handleException
+import com.onreg01.flowcache.utils.throttleFirst
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             .filterIsInstance<Status.Error>()
             .onEach {
                 binding.mainProgress.hide()
-                Snackbar.make(binding.root, "Something went wrong!", Snackbar.LENGTH_SHORT).show()
+                handleException(binding.root, it.value)
             }
             .catch { Timber.e(it) }
             .launchIn(lifecycleScope)
