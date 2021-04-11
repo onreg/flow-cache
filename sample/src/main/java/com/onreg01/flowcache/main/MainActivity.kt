@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.onreg01.flow_cache.model.Status
@@ -13,6 +15,8 @@ import com.onreg01.flowcache.databinding.ActivityMainBinding
 import com.onreg01.flowcache.db.TodoEntity
 import com.onreg01.flowcache.details.DetailsActivity
 import com.onreg01.flowcache.throttleFirst
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
@@ -20,6 +24,8 @@ import kotlinx.coroutines.flow.onEach
 import reactivecircus.flowbinding.android.view.clicks
 import timber.log.Timber
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private val viewModel by viewModels<MainViewModel>()
@@ -31,6 +37,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         val adapter = TodosAdapter()
         binding.mainContent.adapter = adapter
+        binding.mainContent.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         viewModel.todos
             .cache

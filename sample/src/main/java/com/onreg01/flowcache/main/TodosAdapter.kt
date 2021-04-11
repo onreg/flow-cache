@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.onreg01.flowcache.databinding.ItemTodoBinding
 import com.onreg01.flowcache.db.TodoEntity
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class TodosAdapter : ListAdapter<TodoEntity, TodoViewHolder>(DiffCallback) {
 
@@ -34,7 +37,13 @@ private object DiffCallback : DiffUtil.ItemCallback<TodoEntity>() {
 
 class TodoViewHolder(private val binding: ItemTodoBinding) : RecyclerView.ViewHolder(binding.root) {
 
+    private val formatter =
+        DateTimeFormatter.ofPattern("dd.MMM HH:mm")
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+
     fun bind(todoEntity: TodoEntity) {
         binding.itemTodoText.text = todoEntity.text
+        binding.itemTodoDate.text = formatter.format(todoEntity.date)
     }
 }
