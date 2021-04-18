@@ -1,20 +1,17 @@
 package com.onreg01.flowcache.db
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDao {
-    @Query("SELECT * FROM todo ORDER BY date ASC")
+    @Query("SELECT * FROM todo ORDER BY date DESC")
     fun getTodos(): Flow<List<TodoEntity>>
 
     @Query("SELECT * FROM todo WHERE id = :id")
     suspend fun getTodo(id: Long): TodoEntity
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveTodo(todo: TodoEntity)
 
     @Query("DELETE FROM TODO WHERE id = :id")

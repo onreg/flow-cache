@@ -1,5 +1,6 @@
 package com.onreg01.flowcache.details
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.onreg01.flow_cache.model.Status
 import com.onreg01.flow_cache.statusCache
@@ -31,15 +32,20 @@ class DetailsViewModel(id: Long?) : ViewModel() {
             .map { Database.todoDao.getTodo(it.id) }
     }
 
-    val deleteTodo by statusCache<Unit> {
+    val deleteTodo by statusCache<Unit>(false) {
         screenState.filterIsInstance<ScreenState.EditTodo>()
             .map { Database.todoDao.deleteTodo(it.id) }
     }
 
-    val saveTodo by statusCache<String, Unit> {
-        flow {
-            if (it.isBlank()) throw MessageException("Todo shouldn't be empty!")
-            emit(Database.todoDao.saveTodo(TodoEntity(it, Instant.now())))
+    val saveTodo by statusCache<String, Unit>(start = false) { text ->
+        screenState.map {
+            if (text.isBlank()) throw MessageException("Todo shouldn't be empty!")
+            val data = if (it is ScreenState.EditTodo) {
+                TodoEntity(text, Instant.now(), it.id)
+            } else {
+                TodoEntity(text, Instant.now())
+            }
+            Database.todoDao.saveTodo(data)
         }
     }
 

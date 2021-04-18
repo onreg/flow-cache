@@ -55,7 +55,10 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details) {
         viewModel.todo
             .cache
             .asDataEvent()
-            .onEach { binding.detailsText.setText(it.value.text) }
+            .onEach {
+                binding.detailsText.setText(it.value.text)
+                binding.detailsText.setSelection(it.value.text.length)
+            }
             .catch { Timber.e(it) }
             .launchIn(lifecycleScope)
 
@@ -99,7 +102,6 @@ class DetailsActivity : AppCompatActivity(R.layout.activity_details) {
 
         binding.detailsText
             .textChanges()
-            .debounce(400)
             .map(CharSequence::toString)
             .distinctUntilChanged()
             .onEach { viewModel.onTextChanged(it) }

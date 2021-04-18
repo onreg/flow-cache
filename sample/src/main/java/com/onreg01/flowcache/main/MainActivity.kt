@@ -12,6 +12,7 @@ import com.onreg01.flowcache.R
 import com.onreg01.flowcache.databinding.ActivityMainBinding
 import com.onreg01.flowcache.db.TodoEntity
 import com.onreg01.flowcache.details.DetailsActivity
+import com.onreg01.flowcache.details.EXTRA_ID
 import com.onreg01.flowcache.utils.handleException
 import com.onreg01.flowcache.utils.throttleFirst
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = TodosAdapter()
+        val adapter = TodosAdapter(lifecycleScope)
         binding.mainContent.adapter = adapter
         binding.mainContent.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
@@ -68,6 +69,16 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         binding.mainAdd.clicks()
             .throttleFirst()
             .onEach { startActivity(Intent(this, DetailsActivity::class.java)) }
+            .catch { Timber.e(it) }
+            .launchIn(lifecycleScope)
+
+        adapter.clicks
+            .throttleFirst()
+            .onEach {
+                startActivity(Intent(this, DetailsActivity::class.java).apply {
+                    putExtra(EXTRA_ID, it)
+                })
+            }
             .catch { Timber.e(it) }
             .launchIn(lifecycleScope)
     }
