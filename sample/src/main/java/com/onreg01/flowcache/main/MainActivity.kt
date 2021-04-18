@@ -13,6 +13,7 @@ import com.onreg01.flowcache.databinding.ActivityMainBinding
 import com.onreg01.flowcache.db.TodoEntity
 import com.onreg01.flowcache.details.DetailsActivity
 import com.onreg01.flowcache.details.EXTRA_ID
+import com.onreg01.flowcache.utils.changeVisibility
 import com.onreg01.flowcache.utils.handleException
 import com.onreg01.flowcache.utils.throttleFirst
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,27 +42,12 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
         viewModel.todos
             .cache
-            .filterIsInstance<Status.Data<List<TodoEntity>>>()
             .onEach {
-                binding.mainProgress.hide()
-                adapter.submitList(it.value)
-            }
-            .catch { Timber.e(it) }
-            .launchIn(lifecycleScope)
-
-        viewModel.todos
-            .cache
-            .filterIsInstance<Status.Loading>()
-            .onEach { binding.mainProgress.show() }
-            .catch { Timber.e(it) }
-            .launchIn(lifecycleScope)
-
-        viewModel.todos
-            .cache
-            .filterIsInstance<Status.Error>()
-            .onEach {
-                binding.mainProgress.hide()
-                handleException(binding.root, it.value)
+                binding.mainProgress.changeVisibility(it is Status.Loading)
+                when(it){
+                    is Status.Data -> adapter.submitList(it.value)
+                    is Status.Error -> handleException(binding.root, it.value)
+                }
             }
             .catch { Timber.e(it) }
             .launchIn(lifecycleScope)

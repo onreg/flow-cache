@@ -1,6 +1,6 @@
 package com.onreg01.flowcache.utils
 
-import android.app.Activity
+import android.util.Log
 import android.view.View
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
@@ -35,7 +35,7 @@ fun CircularProgressIndicator.changeVisibility(progress: Boolean) {
     if (progress) show() else hide()
 }
 
-fun Activity.handleException(view: View, throwable: Throwable) {
+fun handleException(view: View, throwable: Throwable) {
     val message = if (throwable is MessageException) {
         throwable.message
     } else {

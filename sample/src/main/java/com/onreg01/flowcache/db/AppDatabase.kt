@@ -25,6 +25,6 @@ object Database {
     }
 
     val todoDao by lazy {
-        appDatabase.todoDao()
+        TodoDaoDelayWrapper(appDatabase.todoDao())
     }
 }
