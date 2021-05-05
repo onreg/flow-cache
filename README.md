@@ -78,28 +78,33 @@ Next we can handle `message` in our Activity/Fragment:
 ```
 That's it we got rid of boilerplate code and we got status/error handling on the fly.
 
-#### The FlowCache provides 4 delegates for ViewModel:
+#### The FlowCache provides 4 delegates for ViewModel:  
+Simple caching, without handling statuses, useful if your repository/data source already provides status handling for instance [Store](https://github.com/dropbox/Store).
+Params: `start` if `true`, execution will start immediately after first subscriber. 
 
-```kotlin
-    val message by cache<String> {
+```kotlin  
+	 val message by cache<String> {  
+	 }
+ ```  
 
-    }
-```
+The same as `cache` but with parameter.
 
-```kotlin
-    val message by cache<String, String> { id ->
+```kotlin  
+	 val message by cache<String, String> { id ->
+	 }
+ ```  
 
-    }
-```
+Caching as well as status handling. 
+Params: `start` and `initialParam`, execution will start immediately after first subscriber if `start` is `true` and `initialParam` isn't `null`. 
 
-```kotlin
-    val message by statusCache<String> {
+```kotlin  
+	 val message by statusCache<String> { 
+	 }
+ ```  
 
-    }
-```
+The same as `statusCache` but with parameter.
 
-```kotlin
-    val message by statusCache<String, String> { id -> 
-
-    }
-```
+```kotlin  
+	 val message by statusCache<String, String> { id -> 
+	 }
+ ```
