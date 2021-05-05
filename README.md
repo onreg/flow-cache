@@ -89,22 +89,51 @@ Params: `start` if `true`, execution will start immediately after first subscrib
 
 The same as `cache` but with parameter.
 
-```kotlin  
+```kotlin
 	 val message by cache<String, String> { id ->
 	 }
- ```  
+ ```
 
 Caching as well as status handling. 
 Params: `start` and `initialParam`, execution will start immediately after first subscriber if `start` is `true` and `initialParam` isn't `null`. 
 
-```kotlin  
+```kotlin
 	 val message by statusCache<String> { 
 	 }
- ```  
+ ```
 
 The same as `statusCache` but with parameter.
 
-```kotlin  
-	 val message by statusCache<String, String> { id -> 
-	 }
- ```
+```kotlin
+	val message by statusCache<String, String> { id -> 
+	}
+```
+
+#### Refresh
+It is a common situation to refresh outdated data or repeat request in case of an error.
+
+To rerun body of `cache` you can use `run()`:
+
+```kotlin
+    val message by cache<String> {
+    }
+
+    fun refresh() {
+        message.run()
+    }
+```
+
+To rerun body of `cache<String, String>` you can use `run()` or `run(params)`. In case of `run()` it will use previous params if it exists:
+
+```kotlin
+    val message by cache<String, String> {
+    }
+
+    fun refresh() {
+        message.run()
+    }
+
+    fun refresh(param: String) {
+        message.run(param)
+    }
+```
