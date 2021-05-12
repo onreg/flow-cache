@@ -159,3 +159,27 @@ Under the hood FlowCache prevents duplication requests with the same data, so we
         message.run("10")
     }
 ```
+
+#### One shot events
+
+There are some situations when data should be consumed only once, for instance, navigate to another screen after processing a request or show snackbar with an error. `Status.Data` and `Status.Error` tracks if data was consumed or not:
+
+```kotlin
+    viewModel.message
+            .cache
+            .onEach {
+                when (it) {
+                    is Status.Error -> {
+                        if (!it.consumed){
+                            showError(it.value)
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+```
+
+`FlowCache` provides 3 extensions to get rid of repeating checks:
+- `asEvent()`  - filters consumed data
+- `asDataEvent()` - filters `Status.Data` and consumed
+- `asErrorEvent()` - filters `Status.Error` and consumed
