@@ -78,14 +78,14 @@ Next we can handle `message` in our Activity/Fragment:
 ```
 That's it we got rid of boilerplate code and we got status/error handling on the fly.
 
-#### The FlowCache provides 4 delegates for ViewModel:  
+#### The FlowCache provides 4 delegates for ViewModel:
 Simple caching, without handling statuses, useful if your repository/data source already provides status handling for instance [Store](https://github.com/dropbox/Store).
-Params: `start` if `true`, execution will start immediately after first subscriber. 
+Params: `start` if `true`, execution will start immediately after first subscriber.
 
-```kotlin  
+```kotlin
 	 val message by cache<String> {  
 	 }
- ```  
+ ```
 
 The same as `cache` but with parameter.
 
@@ -94,8 +94,8 @@ The same as `cache` but with parameter.
 	 }
  ```
 
-Caching as well as status handling. 
-Params: `start` and `initialParam`, execution will start immediately after first subscriber if `start` is `true` and `initialParam` isn't `null`. 
+Caching as well as status handling.
+Params: `start` and `initialParam`, execution will start immediately after first subscriber if `start` is `true` and `initialParam` isn't `null`.
 
 ```kotlin
 	 val message by statusCache<String> { 
@@ -135,5 +135,27 @@ To rerun body of `cache<String, String>` you can use `run()` or `run(params)`. I
 
     fun refresh(param: String) {
         message.run(param)
+    }
+```
+
+#### Debounce requests
+
+Under the hood FlowCache prevents duplication requests with the same data, so we don't need to worry about enabling/disabling the user interface. But if the data is changed, the previous request will be canceled.
+
+```kotlin
+    fun refresh() {
+        message.run("5")
+      
+        //will be ignored
+        message.run("5")
+    }
+```
+
+```kotlin
+    fun refresh() {
+        //will be canceled
+        message.run("5")
+      
+        message.run("10")
     }
 ```
