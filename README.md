@@ -1,9 +1,7 @@
 # FlowCache
-FlowCache is a wrapper around a Flow which caches data and manage satuses.
+FlowCache is a wrapper around a `Flow` which caches data and manages statuses.
 
 ### The Problems:
-
-#### A lot of boilerplate code
 
 Typical ViewModel looks like:
 
@@ -32,14 +30,11 @@ class DetailsViewModel(val api: Api) : ViewModel() {
     }
 }
 ```
-And with each action we need to:
+In the example above we need to:
 1. Show/hide progress during long running operations.
 2. Handle errors to prevent runtime crashes.
 3. Change current ui state after successful result.
-
-#### Action duplication
-
-Imagine a situation when users are obsessively pulling to refresh, the block of code above will be executed many times.
+4. Somehow handle action duplication. Imagine a situation when users are obsessively pulling to refresh, the code above will be executed many times.
 
 ### Download:
 ```kotlin
@@ -49,6 +44,7 @@ TBD
 ### Usage:
 
 The code snippet above we can simplify:
+
 ```kotlin
     val message by statusCache<String> {
         flow {
@@ -57,112 +53,71 @@ The code snippet above we can simplify:
     }
 ```
 
-Next we can handle `message` in our Activity/Fragment:
+Next we can handle it in our Activity/Fragment:
+
 ```kotlin
     viewModel.message
         .cache
         .onEach {
             when (it) {
                 is Status.Data -> {
-                    //Show data
+                    //show data
                 }
                 is Status.Error -> {
-                    //Handle error
+                    //handle error
                 }
                 Status.Loading -> {
-                    //Show progress
+                    //show progress
                 }
             }
         }
         .launchIn(lifecycleScope)
 ```
-That's it we got rid of boilerplate code and we got status/error handling on the fly.
+No more boilerplate code and we have status/error handling on the fly.
 
 #### The FlowCache provides 4 delegates for ViewModel:
-Simple caching, without handling statuses, useful if your repository/data source already provides status handling for instance [Store](https://github.com/dropbox/Store).
+
+Simple caching, without handling statuses, useful if your repository/data source already provides status handling.
+
 Params: `start` if `true`, execution will start immediately after first subscriber.
 
 ```kotlin
-	 val message by cache<String> {  
-	 }
+     val message by cache<String> {  
+     }
  ```
 
 The same as `cache` but with parameter.
 
 ```kotlin
-	 val message by cache<String, String> { id ->
-	 }
+     val message by cache<String, String> { id ->
+     }
  ```
 
 Caching as well as status handling.
+
 Params: `start` and `initialParam`, execution will start immediately after first subscriber if `start` is `true` and `initialParam` isn't `null`.
 
 ```kotlin
-	 val message by statusCache<String> { 
-	 }
+     val message by statusCache<String> { 
+     }
  ```
 
 The same as `statusCache` but with parameter.
 
 ```kotlin
-	val message by statusCache<String, String> { id -> 
-	}
-```
-
-#### Refresh
-It is a common situation to refresh outdated data or repeat request in case of an error.
-
-To rerun body of `cache` you can use `run()`:
-
-```kotlin
-    val message by cache<String> {
-    }
-
-    fun refresh() {
-        message.run()
+    val message by statusCache<String, String> { id -> 
     }
 ```
 
-To rerun body of `cache<String, String>` you can use `run()` or `run(params)`. In case of `run()` it will use previous params if it exists:
-
-```kotlin
-    val message by cache<String, String> {
-    }
-
-    fun refresh() {
-        message.run()
-    }
-
-    fun refresh(param: String) {
-        message.run(param)
-    }
-```
-
-#### Debounce requests
-
-Under the hood FlowCache prevents duplication requests with the same data, so we don't need to worry about enabling/disabling the user interface. But if the data is changed, the previous request will be canceled.
-
-```kotlin
-    fun refresh() {
-        message.run("5")
-      
-        //will be ignored
-        message.run("5")
-    }
-```
-
-```kotlin
-    fun refresh() {
-        //will be canceled
-        message.run("5")
-      
-        message.run("10")
-    }
-```
+The `statusCache` response is a `Flow` of `Status`. `Status` is a Kotlin sealed class that can be either a `Data`, `Loading`, `Error` or `Empty` instance.
+1. `Status.Data` - has a `value` field with the data.
+2. `Status.Error` - has a `value` field with `Throwable`.
+3. `Status.Loading` - indicates that execution has started.
+4. `Status.Empty` - fires immediately after each subscription or when `flow` completes without emitting any elements.
 
 #### One shot events
 
-There are some situations when data should be consumed only once, for instance, navigate to another screen after processing a request or show snackbar with an error. `Status.Data` and `Status.Error` tracks if data was consumed or not:
+There are some situations when data should be consumed only once, for instance, navigate to another screen after processing a request or show `snackbar` with an error. `Status.Data` and `Status.Error` tracks if data was consumed or not:
 
 ```kotlin
     viewModel.message
@@ -183,6 +138,57 @@ There are some situations when data should be consumed only once, for instance, 
 - `asEvent()`  - filters consumed data
 - `asDataEvent()` - filters `Status.Data` and consumed
 - `asErrorEvent()` - filters `Status.Error` and consumed
+
+#### Refresh
+It is a common situation to refresh outdated data or repeat request in case of an error.
+
+To rerun body of `cache` you can use `run()`:
+
+```kotlin
+    val message by cache<String> {
+    }
+
+    fun refresh() {
+        message.run()
+    }
+```
+
+To rerun body of `cache<String, String>` you can use `run()` or `run(params)`. In case of `run()` it will use previous params if they exists:
+
+```kotlin
+    val message by cache<String, String> {
+    }
+
+    fun refresh() {
+        message.run()
+    }
+
+    fun refresh(param: String) {
+        message.run(param)
+    }
+```
+
+#### Debounce requests
+
+Under the hood FlowCache prevents duplication requests with the same parameter, so we don't need to worry about enabling/disabling the user interface. But if the parameter is changed, the previous request will be canceled.
+
+```kotlin
+    fun refresh() {
+        message.run("5")
+      
+        //will be ignored
+        message.run("5")
+    }
+```
+
+```kotlin
+    fun refresh() {
+        //will be canceled
+        message.run("5")
+      
+        message.run("10")
+    }
+```
 
 ## Licence
 
