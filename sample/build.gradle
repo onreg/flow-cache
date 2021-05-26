@@ -62,6 +62,6 @@ dependencies {
     def flowbinding_version = "1.0.0"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-android:${flowbinding_version}"
     implementation "io.github.reactivecircus.flowbinding:flowbinding-appcompat:${flowbinding_version}"
-    implementation project (":flow_cache")
 
+    implementation "io.github.onreg:flow-cache:0.0.1"
 }

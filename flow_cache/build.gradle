@@ -3,6 +3,16 @@ plugins {
     id 'kotlin-android'
 }
 
+
+ext {
+    // Provide your own coordinates here
+    PUBLISH_GROUP_ID = 'io.github.onreg'
+    PUBLISH_VERSION = '0.0.1'
+    PUBLISH_ARTIFACT_ID = 'flow-cache'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
