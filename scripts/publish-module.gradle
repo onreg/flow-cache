@@ -4,11 +4,9 @@ apply plugin: 'signing'
 task androidSourcesJar(type: Jar) {
     archiveClassifier.set('sources')
     if (project.plugins.findPlugin("com.android.library")) {
-        // For Android libraries
         from android.sourceSets.main.java.srcDirs
         from android.sourceSets.main.kotlin.srcDirs
     } else {
-        // For pure Kotlin libraries, in case you have them
         from sourceSets.main.java.srcDirs
         from sourceSets.main.kotlin.srcDirs
     }
@@ -24,13 +22,10 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                // The coordinates of the library, being set from variables that
-                // we'll set up later
                 groupId PUBLISH_GROUP_ID
                 artifactId PUBLISH_ARTIFACT_ID
                 version PUBLISH_VERSION
 
-                // Two artifacts, the `aar` (or `jar`) and the sources
                 if (project.plugins.findPlugin("com.android.library")) {
                     from components.release
                 } else {
@@ -39,7 +34,6 @@ afterEvaluate {
 
                 artifact androidSourcesJar
 
-                // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
                     description = 'Wrapper around a Flow which caches data and manages statuses.'
@@ -56,11 +50,8 @@ afterEvaluate {
                             name = 'Vadzim Korzun'
                             email = 'onreg01@gmail.com'
                         }
-                        // Add all other devs here...
                     }
 
-                    // Version control info - if you're using GitHub, follow the
-                    // format as seen here
                     scm {
                         connection = 'scm:git:github.com/onreg/flow-cache.git'
                         developerConnection = 'scm:git:ssh://github.com/onreg/flow-cache.git'
