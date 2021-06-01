@@ -2,12 +2,13 @@ package io.onreg.sdk
 
 private const val ANDROID_GRADLE_PLUGIN_VERSION = "4.1.3"
 private const val GRADLE_NEXUS_PUBLISH_PLUGIN_VERSION = "1.0.0"
+private const val GRADLE_VERSION_PLUGIN_VERSION = "0.39.0"
 
 private const val KOTLIN_VERSION = "1.5.10"
 private const val COROUTINES_VERSION = "1.4.3"
 private const val LIFECYCLE_VIEW_MODEL_ERSION = "2.3.0"
 
-private const val JUNIT_VERSION = "5.7.1"
+private const val JUNIT_VERSION = "4.13.2"
 private const val TURBINE_VERSION = "0.4.1"
 private const val COROUTINES_TEST_VERSION = "1.4.3"
 
@@ -16,6 +17,7 @@ object Dependencies {
     const val androidGradlePlugin = "com.android.tools.build:gradle:$ANDROID_GRADLE_PLUGIN_VERSION"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
     const val gradleNexusPublishPlugin = "io.github.gradle-nexus:publish-plugin:$GRADLE_NEXUS_PUBLISH_PLUGIN_VERSION"
+    const val gradleVersionPlugin = "com.github.ben-manes:gradle-versions-plugin:$GRADLE_VERSION_PLUGIN_VERSION"
 
     /*libs*/
     const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
