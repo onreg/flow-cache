@@ -1,3 +1,3 @@
-include ':flow_cache'
+include ':flow-cache'
 include ':sample'
-rootProject.name = "FlowCache"
+rootProject.name = "flow-cache"
