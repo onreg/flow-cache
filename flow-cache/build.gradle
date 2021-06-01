@@ -1,0 +1,27 @@
+import io.onreg.sdk.Dependencies
+import io.onreg.sdk.Configuration
+
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'com.github.ben-manes.versions'
+}
+
+ext {
+    PUBLISH_GROUP_ID = Configuration.artifactGroup
+    PUBLISH_VERSION = Configuration.versionName
+    PUBLISH_ARTIFACT_ID = 'flow-cache'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
+apply from: "${rootDir}/scripts/android.gradle"
+
+dependencies {
+    implementation Dependencies.kotlinStdlib
+    implementation Dependencies.coroutines
+    implementation Dependencies.lifecycleViewModel
+
+    testImplementation Dependencies.junit
+    testImplementation Dependencies.turbine
+    testImplementation Dependencies.coroutinesTest
+}
