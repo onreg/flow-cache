@@ -1,19 +1,16 @@
 package io.github.onreg.flowcache.cache
 
-import androidx.lifecycle.ViewModel
 import io.github.onreg.flowcache.model.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 class StatusCacheHolder<T : Any, R>(
     private var param: T?,
     start: Boolean = true,
     coroutineScope: CoroutineScope,
     function: (T) -> Flow<R>
-) : Cache<Status<R>>, ParamCache<T, Status<R>>, ReadOnlyProperty<ViewModel, StatusCacheHolder<T, R>> {
+) : Cache<Status<R>>, ParamCache<T, Status<R>> {
 
     private val flow = MutableStateFlow<T?>(null)
 
@@ -51,6 +48,4 @@ class StatusCacheHolder<T : Any, R>(
     override fun run() {
         flow.value = param
     }
-
-    override fun getValue(thisRef: ViewModel, property: KProperty<*>): StatusCacheHolder<T, R> = this
 }
