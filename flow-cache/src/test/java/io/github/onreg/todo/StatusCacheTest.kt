@@ -1,17 +1,17 @@
 package io.github.onreg.todo
 
 import androidx.lifecycle.ViewModel
+import app.cash.turbine.test
 import io.github.onreg.flowcache.asDataEvent
 import io.github.onreg.flowcache.asErrorEvent
 import io.github.onreg.flowcache.asEvent
-import io.github.onreg.flowcache.statusCache
 import io.github.onreg.flowcache.model.Status
+import io.github.onreg.flowcache.statusCache
 import io.github.onreg.todo.utils.BodyExecutionHandler
 import io.github.onreg.todo.utils.BodyExecutionSpy
 import io.github.onreg.todo.utils.FakeViewModelDelegate
 import io.github.onreg.todo.utils.MainCoroutineRule
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.runBlocking
@@ -20,7 +20,6 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.time.ExperimentalTime
 
-@ExperimentalCoroutinesApi
 @ExperimentalTime
 class StatusCacheTest {
 
