@@ -9,7 +9,7 @@ private const val COROUTINES_VERSION = "1.4.3"
 private const val LIFECYCLE_VIEW_MODEL_ERSION = "2.3.0"
 
 private const val JUNIT_VERSION = "4.13.2"
-private const val TURBINE_VERSION = "0.4.1"
+private const val TURBINE_VERSION = "0.5.1"
 private const val COROUTINES_TEST_VERSION = "1.4.3"
 
 object Dependencies {
