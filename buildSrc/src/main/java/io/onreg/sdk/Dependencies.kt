@@ -6,7 +6,7 @@ private const val GRADLE_VERSION_PLUGIN_VERSION = "0.39.0"
 
 private const val KOTLIN_VERSION = "1.5.10"
 private const val COROUTINES_VERSION = "1.4.3"
-private const val LIFECYCLE_VIEW_MODEL_ERSION = "2.3.0"
+private const val LIFECYCLE_VIEW_MODEL_VERSION = "2.3.0"
 
 private const val JUNIT_VERSION = "4.13.2"
 private const val TURBINE_VERSION = "0.5.1"
@@ -22,7 +22,7 @@ object Dependencies {
     /*libs*/
     const val kotlinStdlib = "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
-    const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VIEW_MODEL_ERSION"
+    const val lifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VIEW_MODEL_VERSION"
 
     /*testing*/
     const val junit = "junit:junit:$JUNIT_VERSION"
