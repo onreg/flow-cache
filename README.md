@@ -1,5 +1,5 @@
 # FlowCache
-FlowCache is a wrapper around a `Flow` which caches data and manages statuses.
+FlowCache is a wrapper around a kotlinx.coroutines [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) which caches data and manages statuses.
 
 ### The Problems:
 
@@ -38,7 +38,15 @@ In the example above we need to:
 
 ### Download:
 ```kotlin
-TBD
+allprojects {
+  repositories {
+    mavenCentral()
+  }
+}
+
+dependencies {
+    implementation 'io.github.onreg:flow-cache:1.0.0'
+}
 ```
 
 ### Usage:
